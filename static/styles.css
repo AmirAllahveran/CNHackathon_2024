@@ -44,31 +44,16 @@ h1 {
     position: relative;
 }
 
-.image-container {
-    position: relative;
-    display: inline-block;
-}
-
-.image-container img {
-    max-width: 100px;
-    max-height: 100px;
-    margin: 5px;
-}
-
-.close-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 2px 5px;
-    font-size: 18px;
-    line-height: 10px;
+.image-info {
+    text-align: left;
 }
 
 .result-image {
     max-width: 200px;
     max-height: 200px;
     margin-top: 20px;
+}
+
+.modal-body img {
+    max-width: 100%;
 }

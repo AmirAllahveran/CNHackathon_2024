@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
+from PIL import Image
+import torch
+from torchvision import transforms
 
 app = Flask(__name__)
 
@@ -7,17 +10,42 @@ UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Load your PyTorch model
+# Replace 'your_model_path.pt' with the path to your saved model
+model = torch.load('your_model_path.pt')
+model.eval()
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def read_image(file_path):
-    # Placeholder for image processing logic
-    # Assume this function processes the image and saves a new one
-    new_image_path = file_path  # For now, we just return the same file path
-    processed_info = "Some information about the processed image"
-    return new_image_path, processed_info
+    # Load the image
+    input_image = Image.open(file_path).convert('RGB')
+
+
+    # Move the input to the same device as the model
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    input_batch = input_batch.to(device)
+    model.to(device)
+
+    # Run the model
+    with torch.no_grad():
+        output = model(input_batch)
+
+    # Post-process the output
+    # Assuming the model outputs an image tensor, convert it to a PIL image
+    output_image = transforms.ToPILImage()(output.squeeze().cpu())
+
+    # Save the processed image
+    output_image_path = os.path.join(app.config['UPLOAD_FOLDER'], 'processed_' + os.path.basename(file_path))
+    output_image.save(output_image_path)
+
+    # Generate some information about the processed image
+    processed_info = "Processed image with dimensions: {}".format(output_image.size)
+
+    return output_image_path, processed_info
 
 
 @app.route('/')

@@ -3,32 +3,38 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileInput = document.getElementById('fileInput');
     const uploadForm = document.getElementById('upload-form');
     const resultDiv = document.getElementById('result');
-    const imagePreview = document.getElementById('image-preview');
+    const imageInfo = document.getElementById('image-info');
+    const imageName = document.getElementById('image-name');
+    const viewImageButton = document.getElementById('view-image');
+    const removeImageButton = document.getElementById('remove-image');
+    const modalImage = document.getElementById('modal-image');
+    const imageModal = $('#imageModal');
     const predictButton = uploadForm.querySelector('input[type="submit"]');
 
-    function updateImagePreview(file) {
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                imagePreview.innerHTML = `
-                    <div class="image-container">
-                        <img src="${event.target.result}" class="img-thumbnail" alt="Selected Image">
-                        <span class="close-icon">&times;</span>
-                    </div>
-                `;
-                const closeIcon = imagePreview.querySelector('.close-icon');
-                closeIcon.addEventListener('click', () => {
-                    fileInput.value = '';
-                    imagePreview.innerHTML = '';
-                    predictButton.disabled = true;
-                });
-            };
-            reader.readAsDataURL(file);
-            predictButton.disabled = false;
-        } else {
-            imagePreview.innerHTML = '';
+    function showImageInfo(file) {
+        imageName.textContent = `File name: ${file.name}`;
+        imageInfo.style.display = 'block';
+        dropArea.style.display = 'none';
+        predictButton.disabled = false;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            modalImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        viewImageButton.addEventListener('click', () => {
+            imageModal.modal('show');
+        });
+
+        removeImageButton.addEventListener('click', () => {
+            fileInput.value = '';
+            imageInfo.style.display = 'none';
+            dropArea.style.display = 'flex';
             predictButton.disabled = true;
-        }
+            modalImage.src = '';
+            resultDiv.innerHTML = ''; // Clear the result section
+        });
     }
 
     dropArea.addEventListener('dragover', (event) => {
@@ -47,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const files = event.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
             fileInput.files = files;
-            updateImagePreview(files[0]);
+            showImageInfo(files[0]);
         } else {
             alert('Please drop an image file.');
         }
@@ -60,11 +66,13 @@ document.addEventListener("DOMContentLoaded", function() {
     fileInput.addEventListener('change', () => {
         const files = fileInput.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
-            updateImagePreview(files[0]);
+            showImageInfo(files[0]);
         } else {
             alert('Please select an image file.');
             fileInput.value = ''; // Clear the input
-            updateImagePreview(null);
+            imageInfo.style.display = 'none';
+            dropArea.style.display = 'flex';
+            predictButton.disabled = true;
         }
     });
 
