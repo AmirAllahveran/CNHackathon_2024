@@ -3,6 +3,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileInput = document.getElementById('fileInput');
     const uploadForm = document.getElementById('upload-form');
     const resultDiv = document.getElementById('result');
+    const imagePreview = document.getElementById('image-preview');
+    const predictButton = uploadForm.querySelector('input[type="submit"]');
+
+    function updateImagePreview(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                imagePreview.innerHTML = `<img src="${event.target.result}" class="img-responsive" alt="Selected Image" style="max-width: 100%;">`;
+            };
+            reader.readAsDataURL(file);
+            predictButton.disabled = false;
+        } else {
+            imagePreview.innerHTML = '';
+            predictButton.disabled = true;
+        }
+    }
 
     dropArea.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -20,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const files = event.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
             fileInput.files = files;
+            updateImagePreview(files[0]);
         } else {
             alert('Please drop an image file.');
         }
@@ -31,9 +48,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     fileInput.addEventListener('change', () => {
         const files = fileInput.files;
-        if (files.length > 0 && !files[0].type.startsWith('image/')) {
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            updateImagePreview(files[0]);
+        } else {
             alert('Please select an image file.');
             fileInput.value = ''; // Clear the input
+            updateImagePreview(null);
         }
     });
 
