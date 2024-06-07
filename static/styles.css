@@ -1,23 +1,28 @@
 body {
     background-color: #f8f9fa;
 }
+
 .container {
     margin-top: 50px;
     text-align: center;
 }
+
 h1 {
     padding: 30px;
     font-weight: 600 !important;
     font-size: 3.2em;
     color: #343a40;
 }
+
 .form-inline {
     margin-top: 30px;
 }
+
 .btn-success {
     margin-top: 20px;
     font-size: 1.2em;
 }
+
 .drag-drop {
     border: 2px dashed #28a745;
     padding: 50px;
@@ -28,7 +33,42 @@ h1 {
     align-items: center;
     justify-content: center;
     height: 200px;
+    position: relative;
 }
+
 .drag-drop:hover {
     background-color: #e9ecef;
+}
+
+.image-preview {
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 5px;
+}
+
+.close-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 18px;
+    line-height: 10px;
+}
+
+.result-image {
+    max-width: 200px;
+    max-height: 200px;
+    margin-top: 20px;
 }

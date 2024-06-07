@@ -10,7 +10,18 @@ document.addEventListener("DOMContentLoaded", function() {
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(event) {
-                imagePreview.innerHTML = `<img src="${event.target.result}" class="img-responsive" alt="Selected Image" style="max-width: 100%;">`;
+                imagePreview.innerHTML = `
+                    <div class="image-container">
+                        <img src="${event.target.result}" class="img-thumbnail" alt="Selected Image">
+                        <span class="close-icon">&times;</span>
+                    </div>
+                `;
+                const closeIcon = imagePreview.querySelector('.close-icon');
+                closeIcon.addEventListener('click', () => {
+                    fileInput.value = '';
+                    imagePreview.innerHTML = '';
+                    predictButton.disabled = true;
+                });
             };
             reader.readAsDataURL(file);
             predictButton.disabled = false;
@@ -77,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     resultDiv.innerHTML = `
                         <div class="alert alert-success">Prediction successful!</div>
                         <p>${data.info}</p>
-                        <img src="${data.image_path}" class="img-responsive" alt="Processed Image">
+                        <img src="${data.image_path}" class="img-thumbnail result-image" alt="Processed Image">
                     `;
                 }
             })
